@@ -1,8 +1,9 @@
 #!/bin/sh
 
-# TODO try to find git in various standard locations
-GIT=/usr/local/bin/git
+# find git
+GIT=`which git` # /usr/local/bin/git
 
+# default values
 RELEASE_DEFAULT="0.1"
 REVISION_DEFAULT="nil"
 
@@ -34,6 +35,9 @@ else
   REVISION=$REVISION_DEFAULT
 fi
 
+PREFIX_FILE="$PROJECT_TEMP_DIR/Info.plist.prefix"
+
 # create the file for the preprocessor
-echo "#define BUILD_RELEASE $RELEASE" > Buildnumber.h
-echo "#define BUILD_REVISION $REVISION" >> Buildnumber.h
+echo "#define BUILD_RELEASE  $RELEASE"   > $PREFIX_FILE
+echo "#define BUILD_REVISION $REVISION" >> $PREFIX_FILE
+echo "Created Info.plist prefix file $PREFIX_FILE"
