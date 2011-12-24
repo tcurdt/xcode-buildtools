@@ -45,7 +45,7 @@ if [ -z "$PROJECT_TEMP_DIR" ]; then
   echo "BUILD_REVISION = $REVISION"
 else
   echo "Created Info.plist prefix file $PREFIX_FILE for $RELEASE $REVISION"
-  echo "#define BUILD_RELEASE  $RELEASE"   > $PREFIX_FILE
-  echo "#define BUILD_REVISION $REVISION" >> $PREFIX_FILE
+  echo "#define BUILD_RELEASE  $RELEASE"   > "$PREFIX_FILE"
+  echo "#define BUILD_REVISION $REVISION" >> "$PREFIX_FILE"
 fi
 
