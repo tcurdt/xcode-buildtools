@@ -15,16 +15,12 @@ if [ -d ".git" ]; then
   if [ -z "$RELEASE" ]; then
     # if empty there probably has not been a tag yet
     RELEASE=$RELEASE_DEFAULT
-  fi
-
-  DESCRIBE=`$GIT describe --dirty --tags 2>/dev/null`
-
-  if [ "$DESCRIBE" != "$RELEASE" ]; then
-    if [[ "$GCC_PREPROCESSOR_DEFINITIONS" != *DEBUG* ]]; then
-      echo "ERROR: Release is dirty ($DESCRIBE)"
-      exit 1
-    else
-      echo "WARNING: Build is dirty ($DESCRIBE)"
+    echo "WARNING: Build is not tagged."
+  else
+    DESCRIBE=`$GIT describe --dirty --tags 2>/dev/null`
+    if [ "$DESCRIBE" != "$RELEASE" ]; then
+      echo "WARNING: Build is dirty."
+      RELEASE=$DESCRIBE
     fi
   fi
 
