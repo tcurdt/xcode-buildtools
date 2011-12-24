@@ -20,7 +20,8 @@ if [ -d ".git" ]; then
     DESCRIBE=`$GIT describe --dirty --tags 2>/dev/null`
     if [ "$DESCRIBE" != "$RELEASE" ]; then
       echo "WARNING: Build is dirty."
-      RELEASE=$DESCRIBE
+      COMMITS=`git rev-list HEAD --not 0.9 | wc -l | tr -cd '[[:digit:]]'`
+      RELEASE="$RELEASE+$COMMITS"
     fi
   fi
 
