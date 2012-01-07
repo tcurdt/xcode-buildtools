@@ -1,5 +1,4 @@
 #!/bin/bash
-# set -x
 
 # find git
 GIT=`which git` # /usr/local/bin/git
@@ -11,10 +10,9 @@ REVISION_DEFAULT="0"
 # only try to extract if the project uses git
 if [ -d ".git" ]; then
 
-  # the most recent tag is the release
+  # the most recent tag is the next release
   RELEASE=$(git describe --tags --abbrev=0 $(git rev-list --tags --max-count=1 HEAD) 2>/dev/null)
   if [ -z "$RELEASE" ]; then
-    # if empty there probably has not been a tag yet
     RELEASE=$RELEASE_DEFAULT
     echo "WARNING: Build is not tagged."
   fi
@@ -29,9 +27,13 @@ if [ -d ".git" ]; then
   DESCRIBE=`$GIT describe --dirty --tags 2>/dev/null`
   if [ "$DESCRIBE" != "$RELEASE" ]; then
     echo "WARNING: Build is dirty."
-    COMMITS_SINCE_TAG=$(git rev-list HEAD --not $TAG | wc -l | tr -cd '[[:digit:]]')
+    if [ -z "$DESCRIBE" ]; then
+      COMMITS_SINCE_TAG=
+    else
+      COMMITS_SINCE_TAG=$(git rev-list HEAD --not $TAG | wc -l | tr -cd '[[:digit:]]')
+    fi
     NOT_COMMITTED=$(git status --porcelain 2>/dev/null| egrep "^(M| M|A| A|??)" | wc -l | tr -cd '[[:digit:]]')
-    REVISION="$REVISION+M${NOT_COMMITTED}"
+    REVISION="$REVISION+${COMMITS_SINCE_TAG}M${NOT_COMMITTED}"
   fi
 
 else
