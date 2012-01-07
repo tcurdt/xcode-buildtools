@@ -29,7 +29,7 @@ if [ -d ".git" ]; then
     if [ -z "$DESCRIBE" ]; then
       COMMITS_SINCE_TAG=
     else
-      COMMITS_SINCE_TAG=$(git rev-list HEAD --not $TAG | wc -l | tr -cd '[[:digit:]]')
+      COMMITS_SINCE_TAG=$(git rev-list HEAD --not "$RELEASE" | wc -l | tr -cd '[[:digit:]]')
     fi
     NOT_COMMITTED=$(git status --porcelain 2>/dev/null| egrep "^(M| M|A| A|??)" | wc -l | tr -cd '[[:digit:]]')
     if [ "${COMMITS_SINCE_TAG}M${NOT_COMMITTED}" != "M0" ]; then
