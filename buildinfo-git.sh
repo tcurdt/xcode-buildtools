@@ -26,13 +26,11 @@ if [ -d ".git" ]; then
 
   DESCRIBE=`$GIT describe --dirty --tags 2>/dev/null`
   if [ "$DESCRIBE" != "$RELEASE" ]; then
-    if [ -z "$DESCRIBE" ]; then
-      COMMITS_SINCE_TAG=
-    else
+    if [ ! -z "$DESCRIBE" ]; then
       COMMITS_SINCE_TAG=$(git rev-list HEAD --not "$RELEASE" | wc -l | tr -cd '[[:digit:]]')
     fi
-    NOT_COMMITTED=$(git status --porcelain 2>/dev/null| egrep "^(M| M|A| A|??)" | wc -l | tr -cd '[[:digit:]]')
-    if [ "${COMMITS_SINCE_TAG}M${NOT_COMMITTED}" != "M0" ]; then
+    NOT_COMMITTED=$(git status --porcelain 2>/dev/null| egrep "^(M| M|A| A|??)" | wc -l | tr -cd '[[:digit:]]' | sed 's/^0$//')
+    if [ "${COMMITS_SINCE_TAG}M${NOT_COMMITTED}" != "M" ]; then
       echo "WARNING: Build is dirty."
       REVISION="$REVISION+${COMMITS_SINCE_TAG}M${NOT_COMMITTED}"
     fi
