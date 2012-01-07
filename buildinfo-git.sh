@@ -16,7 +16,7 @@ if [ -d ".git" ]; then
     RELEASE=$RELEASE_DEFAULT
     echo "WARNING: Build is not tagged."
   else
-    COMMITS_SINCE_TAG=$(git rev-list HEAD --not "$RELEASE" | wc -l | tr -cd '[[:digit:]]')
+    COMMITS_SINCE_TAG=$(git rev-list HEAD --not "$RELEASE" | wc -l | tr -cd '[[:digit:]]' | sed 's/^0$//')
   fi
 
   # get the revision
