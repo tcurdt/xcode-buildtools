@@ -1,36 +1,39 @@
 #!/bin/bash
+# set -x
 
 # find git
 GIT=`which git` # /usr/local/bin/git
 
 # default values
 RELEASE_DEFAULT="0.1"
-REVISION_DEFAULT="nil"
+REVISION_DEFAULT="0"
 
 # only try to extract if the project uses git
 if [ -d ".git" ]; then
 
-  # find the most recent tag
-  RELEASE=`$GIT describe --abbrev=0 --tags 2>/dev/null`
+  # the most recent tag is the release
+  RELEASE=$(git describe --tags --abbrev=0 $(git rev-list --tags --max-count=1 HEAD) 2>/dev/null)
   if [ -z "$RELEASE" ]; then
     # if empty there probably has not been a tag yet
     RELEASE=$RELEASE_DEFAULT
     echo "WARNING: Build is not tagged."
-  else
-    DESCRIBE=`$GIT describe --dirty --tags 2>/dev/null`
-    if [ "$DESCRIBE" != "$RELEASE" ]; then
-      echo "WARNING: Build is dirty."
-      COMMITS=`git rev-list HEAD --not 0.9 | wc -l | tr -cd '[[:digit:]]'`
-      RELEASE="$RELEASE+$COMMITS"
-    fi
   fi
 
+  # get the revision
   REVISION="`$GIT rev-parse --short HEAD 2>/dev/null`"
-
   if [ -z "$REVISION" ]; then
     # still empty means there has not been a comit yet
-    REVISION=$RELEASE_DEFAULT
+    REVISION=$REVISION_DEFAULT
   fi
+
+  DESCRIBE=`$GIT describe --dirty --tags 2>/dev/null`
+  if [ "$DESCRIBE" != "$RELEASE" ]; then
+    echo "WARNING: Build is dirty."
+    COMMITS_SINCE_TAG=$(git rev-list HEAD --not $TAG | wc -l | tr -cd '[[:digit:]]')
+    NOT_COMMITTED=$(git status --porcelain 2>/dev/null| egrep "^(M| M|A| A|??)" | wc -l | tr -cd '[[:digit:]]')
+    REVISION="$REVISION+M${NOT_COMMITTED}"
+  fi
+
 else
   # no git, no revision, default first version
   RELEASE=$RELEASE_DEFAULT
