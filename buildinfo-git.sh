@@ -42,15 +42,19 @@ else
   REVISION=$REVISION_DEFAULT
 fi
 
+YEAR=`date +%Y`
+
 PREFIX_FILE="$PROJECT_TEMP_DIR/Info.plist.prefix"
 
 # create the file for the preprocessor
 if [ -z "$PROJECT_TEMP_DIR" ]; then
   echo "BUILD_RELEASE = $RELEASE"
   echo "BUILD_REVISION = $REVISION"
+  echo "BUILD_YEAR = $YEAR"
 else
   echo "Created Info.plist prefix file $PREFIX_FILE for $RELEASE $REVISION"
   echo "#define BUILD_RELEASE  $RELEASE"   > "$PREFIX_FILE"
   echo "#define BUILD_REVISION $REVISION" >> "$PREFIX_FILE"
+  echo "#define BUILD_YEAR $YEAR" >> "$PREFIX_FILE"
 fi
 
