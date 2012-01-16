@@ -164,7 +164,7 @@ def code_keys(dirs)
       while (line = file.gets)
         lc += 1
         keys_in_line(line.strip).each do |key|
-          yield key
+          yield path, lc, key
         end
       end
     end
@@ -195,7 +195,7 @@ def verify(dirs)
   end
 
   unused_keys = Set.new(keys)
-  code_keys(dirs) do |key|
+  code_keys(dirs) do |path,lc,key|
     if keys.include?(key)
       unused_keys.delete(key)
     else
