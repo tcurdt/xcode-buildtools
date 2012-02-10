@@ -223,11 +223,10 @@ end
 
 ret = if ARGV.length == 0
   ignorefile = ".verifystringsignore"
-  reject = if File.exists?(ignorefile)
+  reject = {}
+  if File.exists?(ignorefile)
     reject = File.open(ignorefile) { |f| f.readlines }.map { |l| l.strip }
     puts "Ingoring #{reject}"
-  else
-    {}
   end
   verify(Dir.glob(File.join(ENV['PROJECT_DIR'] || ".", "*"), 0).reject { |s| reject.include?(File.basename(s)) })
 else
